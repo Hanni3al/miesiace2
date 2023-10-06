@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nauka miesięcy po angielsku</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .month-button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border: 2px solid #333;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+
+        .correct {
+            background-color: #4CAF50; /* Zielony kolor dla poprawnej odpowiedzi */
+            color: white;
+        }
+
+        .incorrect {
+            background-color: #f44336; /* Czerwony kolor dla nieprawidłowej odpowiedzi */
+            color: white;
+        }
+
+        .month-button:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nauka miesięcy po angielsku</h1>
+    <div id="question">Który miesiąc to "January"?</div>
+    <div id="month-buttons"></div>
+    <div id="result"></div>
+
+    <script>
+        const months = [
+            { polski: 'STYCZEŃ', angielski: 'January' },
+            { polski: 'LUTY', angielski: 'February' },
+            { polski: 'MARZEC', angielski: 'March' },
+            { polski: 'KWIECIEŃ', angielski: 'April' },
+            { polski: 'MAJ', angielski: 'May' },
+            { polski: 'CZERWIEC', angielski: 'June' },
+            { polski: 'LIPIEC', angielski: 'July' },
+            { polski: 'SIERPIEŃ', angielski: 'August' },
+            { polski: 'WRZESIEŃ', angielski: 'September' },
+            { polski: 'PAŹDZIERNIK', angielski: 'October' },
+            { polski: 'LISTOPAD', angielski: 'November' },
+            { polski: 'GRUDZIEŃ', angielski: 'December' }
+        ];
+
+        const questionElement = document.getElementById('question');
+        const monthButtonsContainer = document.getElementById('month-buttons');
+        const resultElement = document.getElementById('result');
+        let correctMonth;
+
+        function getRandomMonth() {
+            const randomIndex = Math.floor(Math.random() * months.length);
+            correctMonth = months[randomIndex].angielski;
+            return months[randomIndex].polski;
+        }
+
+        function displayQuestion() {
+            const randomMonth = getRandomMonth();
+            questionElement.textContent = `Który miesiąc to "${randomMonth}" po angielsku?`;
+            shuffleMonths();
+        }
+
+        function shuffleMonths() {
+            const shuffledMonths = [...months].sort(() => Math.random() - 0.5);
+            monthButtonsContainer.innerHTML = '';
+
+            shuffledMonths.forEach(month => {
+                const button = document.createElement('button');
+                button.textContent = month.angielski;
+                button.className = 'month-button';
+                button.addEventListener('click', () => checkAnswer(button, month.angielski));
+                monthButtonsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(button, selectedMonth) {
+            if (selectedMonth === correctMonth) {
+                resultElement.textContent = 'Poprawna odpowiedź!';
+                resultElement.className = 'correct';
+                button.classList.add('correct');
+            } else {
+                resultElement.textContent = `Nieprawidłowa odpowiedź. Prawidłowy miesiąc to "${correctMonth}".`;
+                resultElement.className = 'incorrect';
+                button.classList.add('incorrect');
+            }
+
+            setTimeout(() => {
+                resultElement.textContent = '';
+                resultElement.className = '';
+                button.classList.remove('correct', 'incorrect');
+                speakWord(correctMonth);
+                displayQuestion();
+            }, 2000);
+        }
+
+        function speakWord(word) {
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(word);
+            synth.speak(utterance);
+        }
+
+        displayQuestion();
+    </script>
+</body>
+</html>
